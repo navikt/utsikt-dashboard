@@ -1,0 +1,17 @@
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: utsikt-dashboard
+  namespace: utsikt
+spec:
+  image: {{image}}
+  port: 8501
+  replicas:
+    max: 1
+    min: 1
+  resources:
+    requests:
+      cpu: 200m
+      memory: 128Mi
+  ingresses:
+    - https://utsikt-dashboard.ansatt.dev.nav.no
