@@ -1,9 +1,11 @@
 # Test av streamlit
 Det som testes er:
 
-*[ ] Deploye til dev-gvp cluster
-*[ ] Henting av dev data fra BQ
-*[ ] Visuliseringer av dataen
+* Deploye til dev-gvp cluster
+
+* Henting av dev data fra BQ
+
+* Visuliseringer av dataen
 
 # Dockerfile
 To build the Dockerfile:
