@@ -18,5 +18,5 @@ spec:
   gcp:
     bigQueryDatasets:
       - description: Dev datasett for venteregisteret. Datagrunnlag for visualiseringene
-        name: utsikt-dev-3609.venteregister
+        name: utsikt_dev_3609:venteregister
         permission: READ
