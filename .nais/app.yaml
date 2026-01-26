@@ -15,3 +15,8 @@ spec:
       memory: 128Mi
   ingresses:
     - https://utsikt-dashboard.ansatt.dev.nav.no
+gcp:
+  bigQueryDatasets:
+    - description: Dev datasett for venteregisteret. Datagrunnlag for visualiseringene
+      name: utsikt-dev-3609.venteregister
+      permission: READ
