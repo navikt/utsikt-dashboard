@@ -2,6 +2,8 @@ from dataclasses import dataclass, field
 
 import pandas as pd
 
+from bq_connector import BigQueryConnector
+
 @dataclass
 class Table:
     name: str
@@ -17,8 +19,9 @@ class Table:
             query = file.read()
         return query
 
-    def fetch_data(self, bq_client) -> pd.DataFrame:
-        pass
+    def fetch_data(self, bq_client: BigQueryConnector) -> None:
+        self.data = pd.DataFrame(data=bq_client.get_rows(query=self.query))
+
 
 @dataclass
 class Data:
