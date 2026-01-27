@@ -10,9 +10,9 @@ load_dotenv("app/.env")
 
 bq_connector = BigQueryConnector()
 
-faggruppe = Table(path_to_query="app/queries/faggruppe.sql")
-fagomrade = Table(path_to_query="app/queries/fagomrade.sql")
-ventestatus = Table(path_to_query="app/queries/ventestatus.sql")
+faggruppe = Table(path_to_query="queries/faggruppe.sql")
+fagomrade = Table(path_to_query="queries/fagomrade.sql")
+ventestatus = Table(path_to_query="queries/ventestatus.sql")
 
 
 data = Data(faggruppe=faggruppe, fagomrade=fagomrade, ventestatus=ventestatus)

@@ -7,6 +7,13 @@ Det som testes er:
 
 * Visuliseringer av dataen
 
+# Run on local machine
+```
+cd app
+streamlit run main.py
+```
+Obs! Working directory needs to be **/app** directory. 
+
 # Dockerfile
 To build the Dockerfile:
 ```
