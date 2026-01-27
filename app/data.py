@@ -6,9 +6,8 @@ from bq_connector import BigQueryConnector
 
 @dataclass
 class Table:
-    name: str
     path_to_query: str
-    data: pd.DataFrame
+    data: pd.DataFrame = field(init=False)
     query: str = field(init=False)
 
     def __post_init__(self):
@@ -19,8 +18,8 @@ class Table:
             query = file.read()
         return query
 
-    def fetch_data(self, bq_client: BigQueryConnector) -> None:
-        self.data = pd.DataFrame(data=bq_client.get_rows(query=self.query))
+    def fetch_data(self, bq_connector: BigQueryConnector) -> None:
+        self.data = pd.DataFrame(data=bq_connector.get_rows(query=self.query))
 
 
 @dataclass
@@ -30,7 +29,7 @@ class Data:
     ventestatus: Table
 
 
-    def reload_data(self, bq_client) -> None:
-        self.fagomrade.fetch_data(bq_client=bq_client)
-        self.faggruppe.fetch_data(bq_client=bq_client)
-        self.ventestatus.fetch_data(bq_client=bq_client)
+    def reload_data(self, bq_connector) -> None:
+        self.fagomrade.fetch_data(bq_connector=bq_connector)
+        self.faggruppe.fetch_data(bq_connector=bq_connector)
+        self.ventestatus.fetch_data(bq_connector=bq_connector)

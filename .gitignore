@@ -1,3 +1,5 @@
 .idea
 /.venv
 .python-version
+*.env
+app/__pycache__

@@ -1,9 +1,24 @@
 import streamlit as st
 
+from dotenv import load_dotenv
+
+from data import Table, Data
+from bq_connector import BigQueryConnector
 st.set_page_config(layout="wide")
 
+load_dotenv("app/.env")
+
+bq_connector = BigQueryConnector()
+
+faggruppe = Table(path_to_query="app/queries/faggruppe.sql")
+fagomrade = Table(path_to_query="app/queries/fagomrade.sql")
+ventestatus = Table(path_to_query="app/queries/ventestatus.sql")
 
 
+data = Data(faggruppe=faggruppe, fagomrade=fagomrade, ventestatus=ventestatus)
+data.reload_data(bq_connector=bq_connector)
+
+st.text(f"{data.fagomrade.data.shape}")
 
 tab1, tab2 = st.tabs(["Faggruppe", "Ventestatus"])
 
