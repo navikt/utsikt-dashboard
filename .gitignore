@@ -3,3 +3,4 @@
 .python-version
 *.env
 app/__pycache__
+.DS_Store

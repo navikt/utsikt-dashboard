@@ -27,9 +27,11 @@ class Data:
     fagomrade: Table
     faggruppe: Table
     ventestatus: Table
+    stoppnivaer_manuell_ventestatuser: Table
 
 
     def reload_data(self, bq_connector) -> None:
         self.fagomrade.fetch_data(bq_connector=bq_connector)
         self.faggruppe.fetch_data(bq_connector=bq_connector)
         self.ventestatus.fetch_data(bq_connector=bq_connector)
+        self.stoppnivaer_manuell_ventestatuser.fetch_data(bq_connector=bq_connector)
