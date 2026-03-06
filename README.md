@@ -1,11 +1,4 @@
-# Test av streamlit
-Det som testes er:
-
-* Deploye til dev-gvp cluster :white_check_mark:
-
-* Henting av dev data fra BQ
-
-* Visuliseringer av dataen
+# Dashbord om beregninger fra Oppdragssystemet
 
 # Run on local machine
 ```
