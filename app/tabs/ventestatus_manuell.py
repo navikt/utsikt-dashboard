@@ -1,9 +1,15 @@
 import streamlit as st
 import altair as alt
-from main import get_options_column, data, Columns, update, TimeResolution, TimeRelative
+from functions import (
+    get_options_column,
+    Columns,
+    update,
+    TimeResolution,
+    TimeRelative,
+)
 
 
-def ventestatus_manuell():
+def ventestatus_manuell(data):
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
