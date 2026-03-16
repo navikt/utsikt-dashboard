@@ -12,3 +12,12 @@ dependencies = [
     "python-dotenv>=1.1.1",
     "streamlit>=1.52.2",
 ]
+
+[tool.sqlfluff.core]
+dialect = "bigquery"
+max_line_length = 0
+
+[dependency-groups]
+dev = [
+    "sqlfluff>=4.0.4",
+]
