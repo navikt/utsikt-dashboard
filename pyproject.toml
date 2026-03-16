@@ -12,3 +12,8 @@ dependencies = [
     "python-dotenv>=1.1.1",
     "streamlit>=1.52.2",
 ]
+
+[dependency-groups]
+dev = [
+    "sqlfluff>=4.0.4",
+]
