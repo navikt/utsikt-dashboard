@@ -1,10 +1,13 @@
 SELECT
-    status_avsluttet_dato,
     ventestatus_kode,
-    SUM(antall_beregninger) AS antall_beregninger
+    ventestatus_beskrivelse,
+    fagomrade_kode,
+    fagomrade_navn,
+    faggruppe_navn,
+    status_registrert_dato,
+    status_avsluttet_dato,
+    varighet_dager,
+    gjeldende_flagg,
+    antall_beregninger
 FROM
     `utsikt-dev-3609.venteregister.agg_beregninger_manuell_ventestatus_per_ventestatus_varighet_fagomrade_dag`
-WHERE
-    status_avsluttet_dato IS NOT NULL
-GROUP BY
-    status_avsluttet_dato, ventestatus_kode
