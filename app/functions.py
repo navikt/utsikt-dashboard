@@ -1,9 +1,6 @@
 import streamlit as st
 import pandas as pd
-
 from enum import Enum
-
-
 from data import Table
 
 

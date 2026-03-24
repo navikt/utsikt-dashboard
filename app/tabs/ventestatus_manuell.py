@@ -1,7 +1,4 @@
 import streamlit as st
-import altair as alt
-import plotly.express as px
-import pandas as pd
 import datetime
 import dateutil
 
@@ -13,11 +10,14 @@ from functions import (
     TimeRelative,
 )
 
+from plot_functions import create_bar_chart, create_pie_chart
+
 
 def ventestatus_manuell(beregninger_manuell_ventestatuser):
-    col1, col2, col3, col4 = st.columns(4)
+    # Row 1: 4 widgets
+    w1, w2, w3, w4 = st.columns(4)
 
-    with col1:
+    with w1:
         ventestatus_options = get_options_column(
             table=beregninger_manuell_ventestatuser,
             options_column=Columns.VENTESTATUS_BESKRIVELSE,
@@ -30,7 +30,7 @@ def ventestatus_manuell(beregninger_manuell_ventestatuser):
             kwargs={"key": "ventestatus_selection"},
         )
 
-    with col2:
+    with w2:
         faggruppe_options = get_options_column(
             table=beregninger_manuell_ventestatuser, options_column=Columns.FAGGRUPPE
         )
@@ -42,28 +42,27 @@ def ventestatus_manuell(beregninger_manuell_ventestatuser):
             kwargs={"key": "faggruppe_selection2"},
         )
 
-    with col3:
-        select_time_resolution = st.selectbox(
+    with w3:
+        st.selectbox(
             "Oppløsning:",
             options=TimeResolution.options(),
             index=0,
             key="select_time_resolution",
         )
 
-    with col4:
+    with w4:
         min_value = (
             datetime.datetime.now() - dateutil.relativedelta.relativedelta(days=720)
         ).date()
         max_value = datetime.datetime.now().date()
 
-        select_time_relative = st.selectbox(
-            "Periode:", options=TimeRelative.options(), index=0
-        )
+        st.selectbox("Periode:", options=TimeRelative.options(), index=0)
 
     df_beregninger_manuell_ventestatuser = beregninger_manuell_ventestatuser.data.copy(
         deep=True
     )
 
+    # ------- Filter data based on user selections -------
     df_beregninger_manuell_ventestatuser = df_beregninger_manuell_ventestatuser[
         (
             (df_beregninger_manuell_ventestatuser["status_avsluttet_dato"] >= min_value)
@@ -89,50 +88,56 @@ def ventestatus_manuell(beregninger_manuell_ventestatuser):
             )
         ]
 
-    # -------
+    # ------- Create bar chart and pie chart -------
     st.header("Antall beregninger manuelt behandlet per status")
     st.text(
         "Grafen viser antall beregninger for valgte ventestatus, manuell håndering og valgt periode."
     )
     st.markdown(f"minimum dato: {min_value}, max dato: {max_value}")
-    # st.table(
-    #     df_beregninger_manuell_ventestatuser[
-    #         df_beregninger_manuell_ventestatuser.gjeldende_flagg == 0
-    #     ].head()
-    # )
 
     df_til_bar_chart = (
         df_beregninger_manuell_ventestatuser[
             df_beregninger_manuell_ventestatuser.gjeldende_flagg == 0
         ]
-        .groupby(["status_avsluttet_dato", "ventestatus_beskrivelse"])[
-            "antall_beregninger"
-        ]
+        .groupby(
+            ["status_avsluttet_dato", "ventestatus_kode", "ventestatus_beskrivelse"]
+        )["antall_beregninger"]
         .sum()
         .reset_index()
     )
 
-    st.table(df_til_bar_chart.head())
-
-    fig_bar = px.bar(
-        df_til_bar_chart,
-        x="status_avsluttet_dato",
-        y="antall_beregninger",
-        color="ventestatus_beskrivelse",
+    fig_bar = create_bar_chart(
+        df=df_til_bar_chart,
+        x_column="status_avsluttet_dato",
+        y_column="antall_beregninger",
+        color_column="ventestatus_kode",
     )
 
     st.plotly_chart(fig_bar)
-
+    # Row 3: 2 charts
+    pie1, pie2 = st.columns(2)
     df_til_pie = df_beregninger_manuell_ventestatuser[
         df_beregninger_manuell_ventestatuser.gjeldende_flagg == 1
     ]
 
-    fig_pie = px.pie(
-        df_til_pie,
-        values="antall_beregninger",
-        names="ventestatus_kode",
-        title=f"Antall åpne bergninger: {len(df_til_pie)}",
+    fig_pie = create_pie_chart(
+        df=df_til_pie,
+        names_column="ventestatus_kode",
+        values_column="antall_beregninger",
+        title=f"Antall åpne beregninger {len(df_til_pie)}",
     )
 
-    st.header("Antall manuelle beregninger per ventestatus")
-    st.plotly_chart(fig_pie)
+    fig_pie2 = create_pie_chart(
+        df=df_til_pie,
+        names_column="faggruppe_navn",
+        values_column="antall_beregninger",
+        title=f"Antall åpne beregninger {len(df_til_pie)}",
+    )
+
+    with pie1:
+        st.header("Antall manuelle beregninger per ventestatus")
+        st.plotly_chart(fig_pie)
+
+    with pie2:
+        st.header("Antall manuelle beregninger per faggruppe")
+        st.plotly_chart(fig_pie2)
