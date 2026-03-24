@@ -1,9 +1,6 @@
 import streamlit as st
 import pandas as pd
-
 from enum import Enum
-
-
 from data import Table
 
 
@@ -37,7 +34,6 @@ class Columns(Enum):
     VENTESTATUS = "ventestatus_navn"
     BEREGNET_DATO = "beregnet_dato"
     VENTESTATUS_BESKRIVELSE = "ventestatus_beskrivelse"
-    MANUELT = "handteres_manuelt_flagg"
     ANTALL_BEREGNINGER = "antall_beregninger"
 
 
@@ -62,6 +58,8 @@ def get_options_column(
         df = table.data
 
     options = df[options_column.value].unique().tolist()
+    options = [o for o in options if o is not None]
+
     options.sort()
     options.insert(0, "Alle")
 

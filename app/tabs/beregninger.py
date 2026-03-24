@@ -11,6 +11,7 @@ from functions import (
     TimeResolution,
     TimeRelative,
 )
+from plot_functions import create_bar_chart
 
 
 def beregninger(data):
@@ -116,25 +117,14 @@ def beregninger(data):
     st.header("Antall beregning per dag fordelt på faggrupper")
     st.text("Grafen viser antall beregninger for valgte faggrupper og valgt periode.")
 
-    fig_faggruppe = (
-        alt.Chart(data=df_faggruppe)
-        .mark_bar()
-        .encode(
-            x=alt.X(Columns.BEREGNET_DATO.value, title="Beregnet dato"),
-            y=alt.Y(Columns.ANTALL_BEREGNINGER.value, title="Antall beregninger"),
-            color=alt.Color(
-                Columns.FAGGRUPPE.value,
-                legend=alt.Legend(
-                    orient="right",
-                    direction="vertical",
-                    title="Ventestatus",
-                    labelLimit=300,
-                ),
-            ),
-        )
+    fig_faggruppe = create_bar_chart(
+        df=df_faggruppe,
+        x_column=Columns.BEREGNET_DATO.value,
+        y_column=Columns.ANTALL_BEREGNINGER.value,
+        color_column=Columns.FAGGRUPPE.value,
     )
 
-    st.altair_chart(fig_faggruppe, width="stretch")
+    st.plotly_chart(fig_faggruppe)
 
     # ------------------------------------------------------------------------------------------------------------------------------
     st.header("Antall beregning per dag fordelt på fagområder")
@@ -142,22 +132,11 @@ def beregninger(data):
         "Grafen viser antall beregninger for valgte faggrupper, valgte fagområder og valgt periode."
     )
 
-    fig_fagomrade = (
-        alt.Chart(data=df_fagomrade)
-        .mark_bar()
-        .encode(
-            x=alt.X(Columns.BEREGNET_DATO.value, title="Beregnet dato"),
-            y=alt.Y(Columns.ANTALL_BEREGNINGER.value, title="Antall beregninger"),
-            color=alt.Color(
-                Columns.FAGOMRADE.value,
-                legend=alt.Legend(
-                    orient="right",
-                    direction="vertical",
-                    title="Ventestatus",
-                    labelLimit=300,
-                ),
-            ),
-        )
+    fig_fagomrade = create_bar_chart(
+        df=df_fagomrade,
+        x_column=Columns.BEREGNET_DATO.value,
+        y_column=Columns.ANTALL_BEREGNINGER.value,
+        color_column=Columns.FAGOMRADE.value,
     )
 
-    st.altair_chart(fig_fagomrade, width="stretch")
+    st.plotly_chart(fig_fagomrade, width="stretch")

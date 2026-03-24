@@ -11,7 +11,7 @@ from tabs.beregninger import beregninger
 
 st.set_page_config(layout="wide")
 
-load_dotenv("app/.env")
+# load_dotenv("app/.env")
 
 
 @st.cache_data(ttl=24 * 3600)
@@ -46,16 +46,14 @@ if "fagomrade_selection" not in st.session_state:
 if "ventestatus_selection" not in st.session_state:
     st.session_state["ventestatus_selection"] = ["Alle"]
 
-if "manuelt_selection" not in st.session_state:
-    st.session_state["manuelt_selection"] = ["Alle"]
 
-tab1, tab2, tab4 = st.tabs(["Faggruppe", "Ventestatus", "Om dataen"])
+tab1, tab2, tab4 = st.tabs(["Beregninger", "Ventestatus manuell", "Om dataen"])
 
 with tab1:
     beregninger(data)
 
 with tab2:
-    ventestatus_manuell(data)
+    ventestatus_manuell(data.beregninger_manuell_ventestatuser)
 
 with tab4:
     om_dataen()
