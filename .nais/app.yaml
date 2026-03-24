@@ -18,5 +18,5 @@ spec:
   gcp:
     bigQueryDatasets:
       - description: Dev datasett for venteregisteret. Datagrunnlag for visualiseringene
-        name: venteregister
+        name: venteregister_agg
         permission: READ
