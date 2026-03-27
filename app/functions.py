@@ -7,9 +7,9 @@ from data import Table
 class TimeResolution(Enum):
     DAILY = "D"
     WEEKLY = "W"
-    MONTHLY = "MS"
-    QUARTERLY = "QS"
-    YEARLY = "YS"
+    MONTHLY = "M"
+    QUARTERLY = "Q"
+    YEARLY = "Y"
 
     @classmethod
     def options(cls):
@@ -64,6 +64,28 @@ def get_options_column(
     options.insert(0, "Alle")
 
     return options
+
+
+def aggregate_by_time_resolution(
+    df: pd.DataFrame,
+    date_column: str,
+    time_resolution: str,
+    group_columns: list[str],
+    agg_column: str,
+    agg_func: str = "sum",
+) -> pd.DataFrame:
+    df_copy = df.copy()
+    df_copy[date_column] = pd.to_datetime(df_copy[date_column])
+
+    time_resolution_value = TimeResolution[time_resolution.upper()].value
+
+    df_copy["period"] = df_copy[date_column].dt.to_period(time_resolution_value)
+
+    group_cols = ["period"] + group_columns
+    result = df_copy.groupby(group_cols)[agg_column].agg(agg_func).reset_index()
+    result["period"] = result["period"].astype(str)
+
+    return result
 
 
 def update(key):

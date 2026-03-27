@@ -8,6 +8,7 @@ from functions import (
     update,
     TimeResolution,
     TimeRelative,
+    aggregate_by_time_resolution,
 )
 
 from plot_functions import create_bar_chart, create_pie_chart
@@ -56,7 +57,7 @@ def ventestatus_manuell(beregninger_manuell_ventestatuser):
         ).date()
         max_value = datetime.datetime.now().date()
 
-        st.selectbox("Periode:", options=TimeRelative.options(), index=0)
+        st.selectbox("Periode (funker ikke):", options=TimeRelative.options(), index=0)
 
     df_beregninger_manuell_ventestatuser = beregninger_manuell_ventestatuser.data.copy(
         deep=True
@@ -95,20 +96,24 @@ def ventestatus_manuell(beregninger_manuell_ventestatuser):
     )
     st.markdown(f"minimum dato: {min_value}, max dato: {max_value}")
 
-    df_til_bar_chart = (
-        df_beregninger_manuell_ventestatuser[
-            df_beregninger_manuell_ventestatuser.gjeldende_flagg == 0
-        ]
-        .groupby(
-            ["status_avsluttet_dato", "ventestatus_kode", "ventestatus_beskrivelse"]
-        )["antall_beregninger"]
-        .sum()
-        .reset_index()
+    df_til_bar_chart = df_beregninger_manuell_ventestatuser[
+        df_beregninger_manuell_ventestatuser.gjeldende_flagg == 0
+    ]
+
+    time_resolution = st.session_state.get("select_time_resolution", "Daily")
+
+    df_til_bar_chart = aggregate_by_time_resolution(
+        df=df_til_bar_chart,
+        date_column="status_avsluttet_dato",
+        time_resolution=time_resolution,
+        group_columns=["ventestatus_kode", "ventestatus_beskrivelse"],
+        agg_column="antall_beregninger",
+        agg_func="sum",
     )
 
     fig_bar = create_bar_chart(
         df=df_til_bar_chart,
-        x_column="status_avsluttet_dato",
+        x_column="period",
         y_column="antall_beregninger",
         color_column="ventestatus_kode",
     )
