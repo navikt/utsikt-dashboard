@@ -17,6 +17,7 @@ st.set_page_config(layout="wide")
 @st.cache_data(ttl=24 * 3600)
 def fetch_data() -> Data:
     bq_connector = BigQueryConnector()
+
     faggruppe = Table(path_to_query="queries/faggruppe.sql")
     fagomrade = Table(path_to_query="queries/fagomrade.sql")
     ventestatus = Table(path_to_query="queries/ventestatus.sql")

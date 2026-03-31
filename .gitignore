@@ -1,8 +1,11 @@
 .idea
+.DS_Store
+
+*.env
+
 /.venv
 .python-version
-*.env
+
 __pycache__/
-.DS_Store
 app/__pycache__/
 app/tabs/__pycache__/

@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
+
 from enum import Enum
+from typing import Any
 from data import Table
 
 
@@ -37,12 +39,20 @@ class Columns(Enum):
     ANTALL_BEREGNINGER = "antall_beregninger"
 
 
-def filter_on_column(table: Table, column: Columns, values: list[str]) -> pd.DataFrame:
-    df = (
-        table.data[table.data[column.value].isin(values)]
-        .sort_values(by=Columns.BEREGNET_DATO.value, ascending=True)
-        .reset_index(drop=True)
-    )
+
+
+def filter_dataframe_categorical_column(df: pd.DataFrame, column: Columns, values: list[str]) -> pd.DataFrame:
+    if len(values) > 0 and "Alle" not in values:
+        df = (
+            df[df[column.value].isin(values)]
+            .sort_values(by=Columns.BEREGNET_DATO.value, ascending=True)
+            .reset_index(drop=True))
+
+    return df
+
+
+def filter_dataframe_continuous_column(df: pd.DataFrame, column: Columns, lower_value: Any, upper_value: Any ) -> pd.DataFrame:
+    df = df[(df[column.value] >= lower_value) & (df[column.value] <= upper_value)]
     return df
 
 
@@ -53,7 +63,7 @@ def get_options_column(
     filter_values: list[str] = None,
 ) -> list[str]:
     if filter_values and filter_column:
-        df = filter_on_column(table=table, column=filter_column, values=filter_values)
+        df = filter_dataframe_categorical_column(df=table.data, column=filter_column, values=filter_values)
     else:
         df = table.data
 

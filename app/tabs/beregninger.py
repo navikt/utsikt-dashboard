@@ -6,6 +6,8 @@ import dateutil
 
 from functions import (
     get_options_column,
+    filter_dataframe_categorical_column,
+    filter_dataframe_continuous_column,
     Columns,
     update,
     TimeResolution,
@@ -65,13 +67,18 @@ def beregninger(data):
     df_faggruppe = data.faggruppe.data.copy(deep=True)
     df_fagomrade = data.fagomrade.data.copy(deep=True)
 
-    if len(select_faggrupe) > 0 and "Alle" not in select_faggrupe:
-        df_faggruppe = df_faggruppe[
-            df_faggruppe[Columns.FAGGRUPPE.value].isin(select_faggrupe)
-        ]
+
+    df_faggruppe = filter_dataframe_categorical_column(df=df_faggruppe,
+                                                       column=Columns.FAGGRUPPE,
+                                                       select_values=select_faggrupe)
+
+    df_fagomrade = filter_dataframe_categorical_column(df=df_fagomrade,
+                                                       column=Columns.FAGGRUPPE,
+                                                       select_values=select_fagomrade)
 
     # st.table(df_faggruppe)
 
+    # Filter dataframe on column
     if len(select_faggrupe) > 0 and "Alle" not in select_faggrupe:
         df_fagomrade = df_fagomrade[
             df_fagomrade[Columns.FAGGRUPPE.value].isin(select_faggrupe)
@@ -81,6 +88,19 @@ def beregninger(data):
         df_fagomrade = df_fagomrade[
             df_fagomrade[Columns.FAGOMRADE.value].isin(select_fagomrade)
         ]
+
+
+    # filter dataframe on time
+    df_faggruppe = filter_dataframe_continuous_column(df=df_faggruppe,
+                                                      column=Columns.BEREGNET_DATO,
+                                                      lower_value=select_date_range[0],
+                                                      upper_value=select_date_range[1])
+
+
+    df_fagomrade = filter_dataframe_continuous_column(df=df_fagomrade,
+                                                      column=Columns.BEREGNET_DATO,
+                                                      lower_value=select_date_range[0],
+                                                      upper_value=select_date_range[1])
 
     df_faggruppe = df_faggruppe[
         (df_faggruppe[Columns.BEREGNET_DATO.value] >= select_date_range[0])
