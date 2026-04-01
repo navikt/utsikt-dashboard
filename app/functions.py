@@ -56,6 +56,7 @@ def filter_dataframe_continuous_column(df: pd.DataFrame, column: Columns, lower_
     return df
 
 
+
 def get_options_column(
     table: Table,
     options_column: Columns,
@@ -63,9 +64,9 @@ def get_options_column(
     filter_values: list[str] = None,
 ) -> list[str]:
     if filter_values and filter_column:
-        df = filter_dataframe_categorical_column(df=table.data, column=filter_column, values=filter_values)
+        df = filter_dataframe_categorical_column(df=table.dataframe, column=filter_column, values=filter_values)
     else:
-        df = table.data
+        df = table.dataframe
 
     options = df[options_column.value].unique().tolist()
     options = [o for o in options if o is not None]

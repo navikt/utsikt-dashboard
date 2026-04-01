@@ -2,7 +2,7 @@ import streamlit as st
 
 from dotenv import load_dotenv
 
-from data import Table, Data
+from data import Table
 from bq_connector import BigQueryConnector
 
 from tabs.om_dataen import om_dataen
@@ -15,28 +15,25 @@ st.set_page_config(layout="wide")
 
 
 @st.cache_data(ttl=24 * 3600)
-def fetch_data() -> Data:
+def fetch_tables() -> dict[str, Table]:
     bq_connector = BigQueryConnector()
 
-    faggruppe = Table(path_to_query="queries/faggruppe.sql")
-    fagomrade = Table(path_to_query="queries/fagomrade.sql")
-    ventestatus = Table(path_to_query="queries/ventestatus.sql")
-    beregninger_manuell_ventestatuser = Table(
-        path_to_query="queries/beregninger_manuell_ventestatuser.sql"
-    )
+    beregninger_faggruppe = Table(path_to_query="queries/beregninger_faggruppe.sql")
+    beregninger_fagomrade = Table(path_to_query="queries/beregninger_fagomrade.sql")
+    beregninger_manuell_ventestatuser = Table( path_to_query="queries/beregninger_manuell_ventestatuser.sql")
 
-    fetched_data = Data(
-        faggruppe=faggruppe,
-        fagomrade=fagomrade,
-        ventestatus=ventestatus,
-        beregninger_manuell_ventestatuser=beregninger_manuell_ventestatuser,
-    )
-    fetched_data.reload_data(bq_connector=bq_connector)
+    beregninger_faggruppe.fetch_data(bq_connector=bq_connector)
+    beregninger_fagomrade.fetch_data(bq_connector=bq_connector)
+    beregninger_manuell_ventestatuser.fetch_data(bq_connector=bq_connector)
 
-    return fetched_data
+    fetched_tables =  {"beregninger_faggruppe": beregninger_faggruppe,
+                       "beregninger_fagomrade": beregninger_fagomrade,
+                       "beregninger_manuell_ventestatuser": beregninger_manuell_ventestatuser}
+
+    return fetched_tables
 
 
-data = fetch_data()
+tables = fetch_tables()
 
 if "faggruppe_selection" not in st.session_state:
     st.session_state["faggruppe_selection"] = ["Alle"]
@@ -50,11 +47,12 @@ if "ventestatus_selection" not in st.session_state:
 
 tab1, tab2, tab4 = st.tabs(["Beregninger", "Ventestatus manuell", "Om dataen"])
 
+
 with tab1:
-    beregninger(data)
+    beregninger(tables)
 
 with tab2:
-    ventestatus_manuell(data.beregninger_manuell_ventestatuser)
+    ventestatus_manuell(tables["beregninger_manuell_ventestatuser"])
 
 with tab4:
     om_dataen()
