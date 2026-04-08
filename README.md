@@ -1,6 +1,6 @@
 # Dashbord om beregninger fra Oppdragssystemet
 
-# Run on local machine
+# Kjør appen lokalt
 ```
 cd app
 streamlit run main.py
@@ -8,12 +8,12 @@ streamlit run main.py
 Obs! Working directory needs to be **/app** directory. 
 
 # Dockerfile
-To build the Dockerfile:
+For å bygge Dockerfile:
 ```
 docker build -t utsikt_dashboard/test .
 ```
 
-To run the Dockerfile:
+For å kjøre Dockerfile:
 ```
 docker run -p 8501:8501 utsikt_dashboard/test:latest 
 ```
@@ -25,5 +25,18 @@ Vi bruker pakka [sqlfluff](https://docs.sqlfluff.com/en/stable/index.html) for �
 
 For å linte sql-spørringer, kjør `sqlfluff lint app/queries`
 
-# The app
-The application has the following ingress: https://utsikt-dashboard.ansatt.dev.nav.no/
+# Applikasjonen
+Applikasjonen har følgende ingress: https://utsikt-dashboard.ansatt.dev.nav.no/
+
+
+---
+
+## Henvendelser
+
+Enten:
+Spørsmål knyttet til koden eller repositoryet kan stilles som issues her på GitHub
+
+ 
+### For Nav-ansatte
+
+Interne henvendelser kan sendes via Slack i kanalen #team-utsikt.
