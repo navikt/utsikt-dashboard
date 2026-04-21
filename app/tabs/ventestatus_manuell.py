@@ -2,6 +2,8 @@ import streamlit as st
 import datetime
 import dateutil
 
+from data import Table
+
 from functions import (
     get_options_column,
     Columns,
@@ -14,7 +16,7 @@ from functions import (
 from plot_functions import create_bar_chart, create_pie_chart
 
 
-def ventestatus_manuell(beregninger_manuell_ventestatuser):
+def ventestatus_manuell(beregninger_manuell_ventestatuser: Table):
     # Row 1: 4 widgets
     w1, w2, w3, w4 = st.columns(4)
 
@@ -59,7 +61,7 @@ def ventestatus_manuell(beregninger_manuell_ventestatuser):
 
         st.selectbox("Periode (funker ikke):", options=TimeRelative.options(), index=0)
 
-    df_beregninger_manuell_ventestatuser = beregninger_manuell_ventestatuser.data.copy(
+    df_beregninger_manuell_ventestatuser = beregninger_manuell_ventestatuser.dataframe.copy(
         deep=True
     )
 

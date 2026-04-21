@@ -6,6 +6,8 @@ import dateutil
 
 from functions import (
     get_options_column,
+    filter_dataframe_categorical_column,
+    filter_dataframe_continuous_column,
     Columns,
     update,
     TimeResolution,
@@ -15,10 +17,14 @@ from plot_functions import create_bar_chart
 
 
 def beregninger(data):
+
+    beregninger_faggruppe = data["beregninger_faggruppe"]
+    beregninger_fagomrade = data["beregninger_fagomrade"]
+
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         faggruppe_options = get_options_column(
-            table=data.faggruppe, options_column=Columns.FAGGRUPPE
+            table=beregninger_faggruppe, options_column=Columns.FAGGRUPPE
         )
         select_faggrupe = st.multiselect(
             "Faggruppe:",
@@ -30,7 +36,7 @@ def beregninger(data):
 
     with col2:
         fagomrade_options = get_options_column(
-            table=data.fagomrade,
+            table=beregninger_fagomrade,
             options_column=Columns.FAGOMRADE,
             filter_column=Columns.FAGGRUPPE,
             filter_values=select_faggrupe,
@@ -62,63 +68,60 @@ def beregninger(data):
             value=(min_value, max_value),
         )
 
-    df_faggruppe = data.faggruppe.data.copy(deep=True)
-    df_fagomrade = data.fagomrade.data.copy(deep=True)
+    df_beregninger_faggruppe = beregninger_faggruppe.dataframe.copy(deep=True)
+    df_beregninger_fagomrade = beregninger_fagomrade.dataframe.copy(deep=True)
 
-    if len(select_faggrupe) > 0 and "Alle" not in select_faggrupe:
-        df_faggruppe = df_faggruppe[
-            df_faggruppe[Columns.FAGGRUPPE.value].isin(select_faggrupe)
-        ]
+
+    df_beregninger_faggruppe = filter_dataframe_categorical_column(df=df_beregninger_faggruppe,
+                                                       column=Columns.FAGGRUPPE,
+                                                       values=select_faggrupe)
+
+    df_beregninger_fagomrade = filter_dataframe_categorical_column(df=df_beregninger_fagomrade,
+                                                       column=Columns.FAGGRUPPE,
+                                                       values=select_fagomrade)
 
     # st.table(df_faggruppe)
+    # filter dataframe on time
+    df_beregninger_faggruppe = filter_dataframe_continuous_column(df=df_beregninger_faggruppe,
+                                                      column=Columns.BEREGNET_DATO,
+                                                      lower_value=select_date_range[0],
+                                                      upper_value=select_date_range[1])
 
-    if len(select_faggrupe) > 0 and "Alle" not in select_faggrupe:
-        df_fagomrade = df_fagomrade[
-            df_fagomrade[Columns.FAGGRUPPE.value].isin(select_faggrupe)
-        ]
 
-    if len(select_fagomrade) > 0 and "Alle" not in select_fagomrade:
-        df_fagomrade = df_fagomrade[
-            df_fagomrade[Columns.FAGOMRADE.value].isin(select_fagomrade)
-        ]
+    df_beregninger_fagomrade = filter_dataframe_continuous_column(df=df_beregninger_fagomrade,
+                                                      column=Columns.BEREGNET_DATO,
+                                                      lower_value=select_date_range[0],
+                                                      upper_value=select_date_range[1])
 
-    df_faggruppe = df_faggruppe[
-        (df_faggruppe[Columns.BEREGNET_DATO.value] >= select_date_range[0])
-        & (df_faggruppe[Columns.BEREGNET_DATO.value] <= select_date_range[1])
-    ]
-    df_fagomrade = df_fagomrade[
-        (df_fagomrade[Columns.BEREGNET_DATO.value] >= select_date_range[0])
-        & (df_fagomrade[Columns.BEREGNET_DATO.value] <= select_date_range[1])
-    ]
 
-    df_faggruppe["beregnet_dato"] = pd.to_datetime(df_faggruppe["beregnet_dato"])
+    df_beregninger_faggruppe["beregnet_dato"] = pd.to_datetime(df_beregninger_faggruppe["beregnet_dato"])
     frequency = TimeResolution[select_time_resolution.upper()].value
-    df_faggruppe = df_faggruppe.groupby(
+    df_beregninger_faggruppe = df_beregninger_faggruppe.groupby(
         [
             pd.Grouper(key="beregnet_dato", freq=frequency),
             pd.Grouper(key="faggruppe_navn"),
         ]
     ).sum()
-    df_faggruppe = df_faggruppe.sort_values(
+    df_beregninger_faggruppe = df_beregninger_faggruppe.sort_values(
         by=["beregnet_dato"], ascending=True
     ).reset_index()
 
     # df_faggruppe["D"] =  df_faggruppe["beregnet_dato"].apply(lambda x: x.isocalendar().week)
-    df_faggruppe["WS"] = df_faggruppe["beregnet_dato"].apply(
+    df_beregninger_faggruppe["WS"] = df_beregninger_faggruppe["beregnet_dato"].apply(
         lambda x: x.isocalendar().week
     )
     # df_faggruppe["MS"]
     # df_faggruppe["QS"]
     # df_faggruppe["YS"]
     with st.expander("Tabell"):
-        st.table(df_faggruppe)
+        st.table(df_beregninger_faggruppe)
 
     # ------------------------------------------------------------------------------------------------------------------------------
     st.header("Antall beregning per dag fordelt på faggrupper")
     st.text("Grafen viser antall beregninger for valgte faggrupper og valgt periode.")
 
     fig_faggruppe = create_bar_chart(
-        df=df_faggruppe,
+        df=df_beregninger_faggruppe,
         x_column=Columns.BEREGNET_DATO.value,
         y_column=Columns.ANTALL_BEREGNINGER.value,
         color_column=Columns.FAGGRUPPE.value,
@@ -133,7 +136,7 @@ def beregninger(data):
     )
 
     fig_fagomrade = create_bar_chart(
-        df=df_fagomrade,
+        df=df_beregninger_fagomrade,
         x_column=Columns.BEREGNET_DATO.value,
         y_column=Columns.ANTALL_BEREGNINGER.value,
         color_column=Columns.FAGOMRADE.value,
