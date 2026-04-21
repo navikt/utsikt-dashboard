@@ -68,9 +68,9 @@ def get_options_column(
     else:
         df = table.dataframe
 
-    options = df[options_column.value].unique().tolist()
+    options = df[options_column.value].unique().dropna().tolist()
     options = [o for o in options if o is not None]
-
+    print(options)
     options.sort()
     options.insert(0, "Alle")
 
