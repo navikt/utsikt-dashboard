@@ -4,7 +4,7 @@ SELECT
     fagomrade_navn,
     SUM(antall_beregninger) AS antall_beregninger
 FROM
-    `utsikt-dev-3609.venteregister_agg.agg_beregninger_per_fagomrade_dag`
+    `<GOOGLE_CLOUD_PROJECT>.venteregister_agg.agg_beregninger_per_fagomrade_dag`
 GROUP BY
     beregnet_dato,
     faggruppe_navn,

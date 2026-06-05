@@ -1,6 +1,5 @@
 import streamlit as st
-
-from dotenv import load_dotenv
+import os
 
 from data import Table
 from bq_connector import BigQueryConnector
@@ -12,18 +11,28 @@ from tabs.beregninger import beregninger
 
 st.set_page_config(layout="wide")
 
-# load_dotenv("app/.env")
+
+google_project_id = os.environ.get("GOOGLE_CLOUD_PROJECT", "utsikt-dev-3609")
 
 
 @st.cache_data(ttl=24 * 3600)
-def fetch_tables() -> dict[str, Table]:
+def fetch_tables(current_google_project_id:str) -> dict[str, Table]:
     bq_connector = BigQueryConnector()
 
-    oppdrag = Table(path_to_query="queries/oppdrag.sql")
-    beregninger_faggruppe = Table(path_to_query="queries/beregninger_faggruppe.sql")
-    beregninger_fagomrade = Table(path_to_query="queries/beregninger_fagomrade.sql")
+    oppdrag = Table(
+        path_to_query="queries/oppdrag.sql",
+        google_project_id=current_google_project_id)
+
+    beregninger_faggruppe = Table(
+        path_to_query="queries/beregninger_faggruppe.sql",
+        google_project_id=current_google_project_id)
+    beregninger_fagomrade = Table(
+        path_to_query="queries/beregninger_fagomrade.sql",
+        google_project_id=current_google_project_id)
+
     beregninger_manuell_ventestatuser = Table(
-        path_to_query="queries/beregninger_manuell_ventestatuser.sql"
+        path_to_query="queries/beregninger_manuell_ventestatuser.sql",
+        google_project_id=current_google_project_id
     )
 
     oppdrag.fetch_data(bq_connector=bq_connector)
@@ -41,7 +50,7 @@ def fetch_tables() -> dict[str, Table]:
     return fetched_tables
 
 
-tables = fetch_tables()
+tables = fetch_tables(current_google_project_id=google_project_id)
 
 if "faggruppe_selection" not in st.session_state:
     st.session_state["faggruppe_selection"] = ["Alle"]

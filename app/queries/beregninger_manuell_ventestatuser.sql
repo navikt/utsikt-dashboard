@@ -10,4 +10,4 @@ SELECT
     gjeldende_flagg,
     antall_beregninger
 FROM
-    `utsikt-dev-3609.venteregister_agg.agg_beregninger_manuell_ventestatus_per_ventestatus_varighet_fagomrade_dag`
+    `<GOOGLE_CLOUD_PROJECT>.venteregister_agg.agg_beregninger_manuell_ventestatus_per_ventestatus_varighet_fagomrade_dag`
