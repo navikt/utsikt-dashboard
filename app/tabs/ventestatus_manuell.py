@@ -59,10 +59,15 @@ def ventestatus_manuell(beregninger_manuell_ventestatuser: Table):
         ).date()
         max_value = datetime.datetime.now().date()
 
-        st.selectbox("Periode (funker ikke):", options=TimeRelative.options(), index=0)
+        st.selectbox(
+            "Periode (funker ikke):",
+            options=TimeRelative.options(),
+            index=0,
+            key="select_time_relative_ventestatus",
+        )
 
-    df_beregninger_manuell_ventestatuser = beregninger_manuell_ventestatuser.dataframe.copy(
-        deep=True
+    df_beregninger_manuell_ventestatuser = (
+        beregninger_manuell_ventestatuser.dataframe.copy(deep=True)
     )
 
     # ------- Filter data based on user selections -------

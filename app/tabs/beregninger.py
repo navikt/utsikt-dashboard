@@ -52,7 +52,10 @@ def beregninger(data):
 
     with col3:
         select_time_resolution = st.selectbox(
-            "Oppløsning:", options=TimeResolution.options(), index=0
+            "Oppløsning:",
+            options=TimeResolution.options(),
+            index=0,
+            key="select_time_resolution_beregninger",
         )
 
     with col4:
@@ -66,35 +69,45 @@ def beregninger(data):
             min_value=min_value,
             max_value=max_value,
             value=(min_value, max_value),
+            key="date_range_beregninger",
         )
 
     df_beregninger_faggruppe = beregninger_faggruppe.dataframe.copy(deep=True)
     df_beregninger_fagomrade = beregninger_fagomrade.dataframe.copy(deep=True)
 
+    df_beregninger_faggruppe = filter_dataframe_categorical_column(
+        df=df_beregninger_faggruppe,
+        column=Columns.FAGGRUPPE,
+        values=select_faggrupe,
+        date_col=Columns.BEREGNET_DATO,
+    )
 
-    df_beregninger_faggruppe = filter_dataframe_categorical_column(df=df_beregninger_faggruppe,
-                                                       column=Columns.FAGGRUPPE,
-                                                       values=select_faggrupe)
-
-    df_beregninger_fagomrade = filter_dataframe_categorical_column(df=df_beregninger_fagomrade,
-                                                       column=Columns.FAGGRUPPE,
-                                                       values=select_fagomrade)
+    df_beregninger_fagomrade = filter_dataframe_categorical_column(
+        df=df_beregninger_fagomrade,
+        column=Columns.FAGGRUPPE,
+        values=select_fagomrade,
+        date_col=Columns.BEREGNET_DATO,
+    )
 
     # st.table(df_faggruppe)
     # filter dataframe on time
-    df_beregninger_faggruppe = filter_dataframe_continuous_column(df=df_beregninger_faggruppe,
-                                                      column=Columns.BEREGNET_DATO,
-                                                      lower_value=select_date_range[0],
-                                                      upper_value=select_date_range[1])
+    df_beregninger_faggruppe = filter_dataframe_continuous_column(
+        df=df_beregninger_faggruppe,
+        column=Columns.BEREGNET_DATO,
+        lower_value=select_date_range[0],
+        upper_value=select_date_range[1],
+    )
 
+    df_beregninger_fagomrade = filter_dataframe_continuous_column(
+        df=df_beregninger_fagomrade,
+        column=Columns.BEREGNET_DATO,
+        lower_value=select_date_range[0],
+        upper_value=select_date_range[1],
+    )
 
-    df_beregninger_fagomrade = filter_dataframe_continuous_column(df=df_beregninger_fagomrade,
-                                                      column=Columns.BEREGNET_DATO,
-                                                      lower_value=select_date_range[0],
-                                                      upper_value=select_date_range[1])
-
-
-    df_beregninger_faggruppe["beregnet_dato"] = pd.to_datetime(df_beregninger_faggruppe["beregnet_dato"])
+    df_beregninger_faggruppe["beregnet_dato"] = pd.to_datetime(
+        df_beregninger_faggruppe["beregnet_dato"]
+    )
     frequency = TimeResolution[select_time_resolution.upper()].value
     df_beregninger_faggruppe = df_beregninger_faggruppe.groupby(
         [

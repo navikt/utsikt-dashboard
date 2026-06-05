@@ -9,7 +9,7 @@ from data import Table
 class TimeResolution(Enum):
     DAILY = "D"
     WEEKLY = "W"
-    MONTHLY = "M"
+    MONTHLY = "ME"
     QUARTERLY = "Q"
     YEARLY = "Y"
 
@@ -31,30 +31,36 @@ class TimeRelative(Enum):
 
 
 class Columns(Enum):
+    YTELSE = "ytelse"
     FAGGRUPPE = "faggruppe_navn"
     FAGOMRADE = "fagomrade_navn"
     VENTESTATUS = "ventestatus_navn"
     BEREGNET_DATO = "beregnet_dato"
+    DATO_OPPDRAG_LASTET = "dato_oppdrag_lastet"
     VENTESTATUS_BESKRIVELSE = "ventestatus_beskrivelse"
     ANTALL_BEREGNINGER = "antall_beregninger"
+    ANTALL_OPPDRAG = "antall_oppdrag"
+    KILDESYSTEM = "kildesystem"
 
 
-
-
-def filter_dataframe_categorical_column(df: pd.DataFrame, column: Columns, values: list[str]) -> pd.DataFrame:
+def filter_dataframe_categorical_column(
+    df: pd.DataFrame, column: Columns, values: list[str], date_col: Columns = None
+) -> pd.DataFrame:
     if len(values) > 0 and "Alle" not in values:
         df = (
             df[df[column.value].isin(values)]
-            .sort_values(by=Columns.BEREGNET_DATO.value, ascending=True)
-            .reset_index(drop=True))
+            .sort_values(by=date_col.value, ascending=True)
+            .reset_index(drop=True)
+        )
 
     return df
 
 
-def filter_dataframe_continuous_column(df: pd.DataFrame, column: Columns, lower_value: Any, upper_value: Any ) -> pd.DataFrame:
+def filter_dataframe_continuous_column(
+    df: pd.DataFrame, column: Columns, lower_value: Any, upper_value: Any
+) -> pd.DataFrame:
     df = df[(df[column.value] >= lower_value) & (df[column.value] <= upper_value)]
     return df
-
 
 
 def get_options_column(
@@ -64,13 +70,14 @@ def get_options_column(
     filter_values: list[str] = None,
 ) -> list[str]:
     if filter_values and filter_column:
-        df = filter_dataframe_categorical_column(df=table.dataframe, column=filter_column, values=filter_values)
+        df = filter_dataframe_categorical_column(
+            df=table.dataframe, column=filter_column, values=filter_values
+        )
     else:
         df = table.dataframe
 
     options = df[options_column.value].unique().dropna().tolist()
     options = [o for o in options if o is not None]
-    print(options)
     options.sort()
     options.insert(0, "Alle")
 
