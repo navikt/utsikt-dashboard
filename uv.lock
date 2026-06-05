@@ -1375,7 +1375,7 @@ dev = [
 requires-dist = [
     { name = "google-auth", specifier = ">=2.53.0" },
     { name = "google-cloud-bigquery", specifier = ">=3.34.0" },
-    { name = "pandas", specifier = ">=2.3.3" },
+    { name = "pandas", specifier = ">=3.0.3" },
     { name = "plotly", specifier = ">=6.8.0" },
     { name = "python-dotenv", specifier = ">=1.1.1" },
     { name = "streamlit", specifier = ">=1.58.0" },
