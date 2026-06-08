@@ -13,7 +13,7 @@ jobs:
       id-token: write
       actions: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           fetch-depth: 0
       - name: Determine what to do
@@ -23,18 +23,18 @@ jobs:
           files: .nais/app.yaml
       - name: Build and push image and SBOM to OCI registry
         if: steps.changed-files.outputs.changed != 'only-inputs'
-        uses: nais/docker-build-push@v0
+        uses: nais/docker-build-push@05dbb6091b30bd84279c6d64a45ef8782fd410a5 # v0
         id: docker-build-push
         with:
           team: utsikt
       - name: Deploy to dev
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@ab841e4d99cbb00edd996d3ae39bd4cea6b8e2c2 # v2
         env:
           CLUSTER: "dev-gcp"
           RESOURCE: .nais/dev_app.yaml
           VAR: image=${{ steps.docker-build-push.outputs.image }}
       - name: Deploy to prod
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@ab841e4d99cbb00edd996d3ae39bd4cea6b8e2c2 # v2
         env:
           CLUSTER: "prod-gcp"
           RESOURCE: .nais/prod_app.yaml
