@@ -28,13 +28,13 @@ jobs:
         with:
           team: utsikt
       - name: Deploy to dev
-        uses: nais/deploy/actions/deploy@ab841e4d99cbb00edd996d3ae39bd4cea6b8e2c2 # v2
+        uses: nais/deploy/actions/deploy@8a6fb62e73f837af6287d5db84a46ea96aa6c30d # v2
         env:
           CLUSTER: "dev-gcp"
           RESOURCE: .nais/dev_app.yaml
           VAR: image=${{ steps.docker-build-push.outputs.image }}
       - name: Deploy to prod
-        uses: nais/deploy/actions/deploy@ab841e4d99cbb00edd996d3ae39bd4cea6b8e2c2 # v2
+        uses: nais/deploy/actions/deploy@8a6fb62e73f837af6287d5db84a46ea96aa6c30d # v2
         env:
           CLUSTER: "prod-gcp"
           RESOURCE: .nais/prod_app.yaml
