@@ -17,7 +17,7 @@ from data import Table
 
 def oppdrag(oppdrag: Table):
 
-    w1, w2, w3 = st.columns(3)
+    w1, w2, w3, w4 = st.columns(4)
     with w1:
         ytelse_options = get_options_column(
             table=oppdrag, options_column=Columns.YTELSE
@@ -34,7 +34,7 @@ def oppdrag(oppdrag: Table):
         select_time_resolution_oppdrag = st.selectbox(
             "Oppløsning:",
             options=TimeResolution.options(),
-            index=0,
+            index=1,  # default to weekly
             key="select_time_resolution_oppdrag",
         )
 
@@ -48,8 +48,18 @@ def oppdrag(oppdrag: Table):
             "Fra dato og til dato:",
             min_value=min_value,
             max_value=max_value,
-            value=(min_value, max_value),
+            value=(
+                max_value - dateutil.relativedelta.relativedelta(months=2),
+                max_value,
+            ),
             key="date_range_oppdrag",
+        )
+
+    with w4:
+        show_proportion = st.toggle(
+            "Vis andel",
+            value=False,
+            key="oppdrag_show_proportion",
         )
 
     df_oppdrag = oppdrag.dataframe.copy(deep=True)
@@ -93,6 +103,7 @@ def oppdrag(oppdrag: Table):
         x_column=Columns.DATO_OPPDRAG_LASTET.value,
         y_column=Columns.ANTALL_OPPDRAG.value,
         color_column=Columns.YTELSE.value,
+        show_proportion=show_proportion,
     )
 
     st.plotly_chart(fig_ytelse)
@@ -114,6 +125,7 @@ def oppdrag(oppdrag: Table):
         x_column=Columns.DATO_OPPDRAG_LASTET.value,
         y_column=Columns.ANTALL_OPPDRAG.value,
         color_column=Columns.KILDESYSTEM.value,
+        show_proportion=show_proportion,
     )
 
     st.plotly_chart(fig_kildesystem)

@@ -29,8 +29,26 @@ color_map_ventestatus = {
 }
 
 
+def _get_chart_dataframe(
+    df: pd.DataFrame, x_column: str, y_column: str, show_proportion: bool
+) -> pd.DataFrame:
+    df_chart = df.copy(deep=True)
+
+    if not show_proportion:
+        return df_chart
+
+    totals = df_chart.groupby(x_column)[y_column].transform("sum")
+    df_chart["andel"] = df_chart[y_column].div(totals.where(totals != 0, 1))
+
+    return df_chart
+
+
 def create_bar_chart(
-    df: pd.DataFrame, x_column: str, y_column: str, color_column: Optional[str] = None
+    df: pd.DataFrame,
+    x_column: str,
+    y_column: str,
+    color_column: Optional[str] = None,
+    show_proportion: bool = False,
 ):
     if color_column == "faggruppe_navn":
         color_discrete_map = color_map_faggruppe
@@ -47,15 +65,30 @@ def create_bar_chart(
         category_orders = None
         hover_data = None
 
+    df_chart = _get_chart_dataframe(
+        df=df,
+        x_column=x_column,
+        y_column=y_column,
+        show_proportion=show_proportion,
+    )
+
+    chart_y_column = "andel" if show_proportion else y_column
+
     bar_chart = px.bar(
-        df,
+        df_chart,
         x=x_column,
-        y=y_column,
+        y=chart_y_column,
         hover_data=hover_data,
         color=color_column,
         color_discrete_map=color_discrete_map,
         category_orders=category_orders,
     )
+
+    bar_chart.update_yaxes(
+        title_text="Andel" if show_proportion else y_column,
+        tickformat=".0%" if show_proportion else None,
+    )
+
     return bar_chart
 
 
