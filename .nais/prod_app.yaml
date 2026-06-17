@@ -10,9 +10,12 @@ spec:
     max: 1
     min: 1
   resources:
+    limits:
+      cpu: 800m
+      memory: 1Gi
     requests:
-      cpu: 200m
-      memory: 128Mi
+      cpu: 600m
+      memory: 800Mi
   ingresses:
     - https://utsikt-dashboard.ansatt.nav.no
   gcp:
