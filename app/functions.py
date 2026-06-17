@@ -34,6 +34,7 @@ class Columns(Enum):
     YTELSE = "ytelse"
     FAGGRUPPE = "faggruppe_navn"
     FAGOMRADE = "fagomrade_navn"
+    FAGOMRADE_KODE = "fagomrade_kode"
     VENTESTATUS = "ventestatus_navn"
     BEREGNET_DATO = "beregnet_dato"
     DATO_OPPDRAG_LASTET = "dato_oppdrag_lastet"
