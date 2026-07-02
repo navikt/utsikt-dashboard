@@ -1,13 +1,15 @@
 SELECT
-    beregnet_dato,
+    DATE_TRUNC(beregnet_dato, <TIME_RESOLUTION>) AS beregnet_dato,
     faggruppe_navn,
     fagomrade_navn,
     SUM(antall_beregninger) AS antall_beregninger
 FROM
     `<GOOGLE_CLOUD_PROJECT>.venteregister_agg.agg_beregninger_per_fagomrade_dag`
+WHERE
+    beregnet_dato BETWEEN @default_start_date_beregninger AND @default_end_date_beregninger
 GROUP BY
-    beregnet_dato,
-    faggruppe_navn,
-    fagomrade_navn
+    1,
+    2,
+    3
 ORDER BY
-    beregnet_dato ASC, faggruppe_navn ASC, faggruppe_navn ASC
+    1 ASC, 2 ASC, 3 ASC

@@ -11,7 +11,6 @@ from functions import (
     Columns,
     update,
     TimeResolution,
-    TimeRelative,
 )
 from plot_functions import create_bar_chart
 
@@ -51,7 +50,7 @@ def beregninger(data):
         )
 
     with col3:
-        select_time_resolution = st.selectbox(
+        st.selectbox(
             "Oppløsning:",
             options=TimeResolution.options(),
             index=0,
@@ -108,13 +107,6 @@ def beregninger(data):
     df_beregninger_faggruppe["beregnet_dato"] = pd.to_datetime(
         df_beregninger_faggruppe["beregnet_dato"]
     )
-    frequency = TimeResolution[select_time_resolution.upper()].value
-    df_beregninger_faggruppe = df_beregninger_faggruppe.groupby(
-        [
-            pd.Grouper(key="beregnet_dato", freq=frequency),
-            pd.Grouper(key="faggruppe_navn"),
-        ]
-    ).sum()
     df_beregninger_faggruppe = df_beregninger_faggruppe.sort_values(
         by=["beregnet_dato"], ascending=True
     ).reset_index()

@@ -5,7 +5,6 @@ import dateutil
 
 from functions import (
     get_options_column,
-    TimeResolution,
     update,
     filter_dataframe_categorical_column,
     filter_dataframe_continuous_column,
@@ -31,10 +30,10 @@ def oppdrag(oppdrag: Table):
         )
 
     with w2:
-        select_time_resolution_oppdrag = st.selectbox(
+        st.selectbox(
             "Oppløsning:",
-            options=TimeResolution.options(),
-            index=1,  # default to weekly
+            options=["Daily", "Weekly", "Monthly", "Quarterly", "Yearly"],
+            index=1,
             key="select_time_resolution_oppdrag",
         )
 
@@ -84,17 +83,12 @@ def oppdrag(oppdrag: Table):
         df_oppdrag["dato_oppdrag_lastet"]
     )
 
-    frequency = TimeResolution[select_time_resolution_oppdrag.upper()].value
-
     # ------------------------------------------------------------------------------------------------------------------------------
     st.header("Antall oppdrag fordelt på ytelse")
     st.text("Grafen viser antall oppdrag for valgte ytelser og valgt periode.")
 
     df_oppdrag_ytelse = df_oppdrag.groupby(
-        [
-            pd.Grouper(key="dato_oppdrag_lastet", freq=frequency),
-            pd.Grouper(key="ytelse"),
-        ],
+        ["dato_oppdrag_lastet", "ytelse"],
         as_index=False,
     ).sum()
 
@@ -113,10 +107,7 @@ def oppdrag(oppdrag: Table):
     st.text("Grafen viser antall oppdrag for valgte ytelser og valgt periode.")
 
     df_oppdrag_kildesystem = df_oppdrag.groupby(
-        [
-            pd.Grouper(key="dato_oppdrag_lastet", freq=frequency),
-            pd.Grouper(key="kildesystem"),
-        ],
+        ["dato_oppdrag_lastet", "kildesystem"],
         as_index=False,
     ).sum()
 

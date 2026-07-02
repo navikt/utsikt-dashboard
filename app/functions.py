@@ -17,6 +17,17 @@ class TimeResolution(Enum):
     def options(cls):
         return [option.name.capitalize() for option in cls]
 
+    @classmethod
+    def to_bq_trunc_part(cls, resolution: str) -> str:
+        mapping = {
+            "DAILY": "DAY",
+            "WEEKLY": "WEEK",
+            "MONTHLY": "MONTH",
+            "QUARTERLY": "QUARTER",
+            "YEARLY": "YEAR",
+        }
+        return mapping[resolution.upper()]
+
 
 class TimeRelative(Enum):
     LAST_DAY = "LAST_DAY"
