@@ -5,12 +5,12 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "google-auth>=2.55.0",
-    "google-cloud-bigquery>=3.42.0",
-    "pandas>=3.0.3",
-    "plotly>=6.8.0",
+    "google-auth>=2.56.3",
+    "google-cloud-bigquery>=3.43.0",
+    "pandas>=3.0.5",
+    "plotly>=6.9.0",
     "python-dotenv>=1.1.1",
-    "streamlit>=1.58.0",
+    "streamlit>=1.61.1",
 ]
 
 [tool.sqlfluff.core]
@@ -19,5 +19,5 @@ max_line_length = 0
 
 [dependency-groups]
 dev = [
-    "sqlfluff>=4.2.1",
+    "sqlfluff>=4.3.0",
 ]
