@@ -1,4 +1,4 @@
-FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/python:3.14-dev AS builder
+FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/python:3.15-dev AS builder
 
 COPY requirements.txt .
 
@@ -10,7 +10,7 @@ RUN source .venv/bin/activate
 RUN pip3 install -r requirements.txt
 
 
-FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/python:3.14 AS runner
+FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/python:3.15 AS runner
 
 COPY . .
 
