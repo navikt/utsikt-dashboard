@@ -26,7 +26,7 @@ Vi bruker pakka [sqlfluff](https://docs.sqlfluff.com/en/stable/index.html) for �
 For å linte sql-spørringer, kjør `sqlfluff lint app/queries`
 
 # Applikasjonen
-Applikasjonen har følgende ingress: https://utsikt-dashboard.ansatt.dev.nav.no/
+Applikasjonen blir ikke lenger deployet, da koden ikke er forvaltet aktivt for øyeblikket
 
 
 ---
